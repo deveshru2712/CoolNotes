@@ -9,6 +9,8 @@ import { Note as NoteModel } from "./models/notes";
 import * as NoteApi from "./api/notes_api";
 import AddNoteDialog from "./components/AddEditNoteDialog";
 import Note from "./components/Note";
+import SignUpModal from "./components/SignUpModal";
+import LoginModel from "./components/LoginModel";
 
 const App = () => {
   // this tell tsc that i will be of Note type in future
@@ -102,6 +104,13 @@ const App = () => {
             );
           }}
         />
+      )}
+      {false && (
+        <SignUpModal onDismiss={() => {}} onSignUpSuccessfully={() => {}} />
+      )}
+
+      {false && (
+        <LoginModel onDismiss={() => {}} onLoginSuccessful={() => {}} />
       )}
     </Container>
   );
