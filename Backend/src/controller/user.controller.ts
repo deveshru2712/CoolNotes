@@ -40,7 +40,47 @@ export const signUp: RequestHandler<
       password: hashedPassword,
     });
 
+    req.session.userId = newUser._id;
+
     res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
+  }
+};
+
+interface LoginBody {
+  username?: string;
+  password?: string;
+}
+
+export const login: RequestHandler<
+  unknown,
+  unknown,
+  LoginBody,
+  unknown
+> = async (req, res, next) => {
+  const { username, password } = req.body;
+  try {
+    if (!username || !password) {
+      throw createHttpError(400, "Please provide all fields");
+    }
+
+    const user = await UserModel.findOne({ username }).select(
+      "+password +email"
+    );
+
+    if (!user) {
+      throw createHttpError(401, "Invalid credentials");
+    }
+
+    const comparePassword = await bcrypt.compare(password, user.password);
+
+    if (!comparePassword) {
+      throw createHttpError(401, "Invalid credentials");
+    }
+
+    req.session.userId = user._id;
+    res.status(200).json(user);
   } catch (error) {
     next(error);
   }
