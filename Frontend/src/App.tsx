@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Button, Col, Container, Row } from "react-bootstrap";
 import styles from "./styles/NotePage.module.css";
+import stylesUtils from "./styles/utils.module.css";
 
 import { Note as NoteModel } from "./models/notes";
 
@@ -27,15 +28,31 @@ const App = () => {
     loadNotes();
   }, []);
 
+  const deleteNote = async (note: NoteModel) => {
+    try {
+      await NoteApi.deleteNote(note._id);
+      setNotes(notes.filter((existingNote) => existingNote._id !== note._id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Container>
-      <Button className="mb-4" onClick={() => setshowAddNoteDialog(true)}>
+      <Button
+        className={`mb-4 ${stylesUtils.blockCenter}`}
+        onClick={() => setshowAddNoteDialog(true)}
+      >
         Add new Note
       </Button>
       <Row xs={1} md={2} xl={3} className="g-4">
         {notes.map((item) => (
           <Col key={item._id}>
-            <Note note={item} className={styles.note} />
+            <Note
+              note={item}
+              className={styles.note}
+              onDeleteNoteClicked={deleteNote}
+            />
           </Col>
         ))}
       </Row>
