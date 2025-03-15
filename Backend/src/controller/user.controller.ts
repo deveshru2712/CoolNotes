@@ -99,3 +99,14 @@ export const login: RequestHandler<
     next(error);
   }
 };
+
+export const logOut: RequestHandler = (req, res, next) => {
+  // this does not returns promise
+  req.session.destroy((error) => {
+    if (error) {
+      next(error);
+    } else {
+      res.sendStatus(200);
+    }
+  });
+};
