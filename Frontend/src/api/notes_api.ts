@@ -3,7 +3,7 @@ import { Note } from "../models/notes";
 // request info -> is the url
 // init -> is used for method
 
-const fetchData = async (input: RequestInfo, init?: RequestInit) => {
+export const fetchData = async (input: RequestInfo, init?: RequestInit) => {
   const response = await fetch(input, init);
   if (response.ok) {
     return response;
@@ -54,7 +54,7 @@ export const updateNote = async (
 };
 
 export const deleteNote = async (noteId: string) => {
-  const response = await fetchData(`/api/notes/${noteId}`, {
+  await fetchData(`/api/notes/${noteId}`, {
     method: "DELETE",
   });
 };
