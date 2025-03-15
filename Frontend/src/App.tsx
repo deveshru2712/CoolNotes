@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import styles from "./styles/NotePage.module.css";
 import stylesUtils from "./styles/utils.module.css";
 
@@ -13,17 +13,24 @@ import Note from "./components/Note";
 const App = () => {
   // this tell tsc that i will be of Note type in future
   const [notes, setNotes] = useState<NoteModel[]>([]);
+  const [notesLoading, setNotesLoading] = useState(true);
+  const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
+
   const [showAddNoteDialog, setshowAddNoteDialog] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
 
   useEffect(() => {
     const loadNotes = async () => {
       try {
+        setShowNotesLoadingError(false);
+        setNotesLoading(true);
         const notes = await NoteApi.fetchNotes();
         setNotes(notes);
       } catch (error) {
         console.error(error);
-        alert(error);
+        setShowNotesLoadingError(true);
+      } finally {
+        setNotesLoading(false);
       }
     };
     loadNotes();
@@ -38,27 +45,39 @@ const App = () => {
     }
   };
 
+  const noteGrid = (
+    <Row xs={1} md={2} xl={3} className={`g-4 ${styles.noteGrid}`}>
+      {notes.map((item) => (
+        <Col key={item._id}>
+          <Note
+            note={item}
+            className={styles.note}
+            onDeleteNoteClicked={deleteNote}
+            // passing state setters directly as event handlers or callback props.
+            onNoteClicked={setNoteToEdit}
+          />
+        </Col>
+      ))}
+    </Row>
+  );
+
   return (
-    <Container>
+    <Container className={`${styles.notePage}`}>
       <Button
         className={`mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
         onClick={() => setshowAddNoteDialog(true)}
       >
         Add new Note
       </Button>
-      <Row xs={1} md={2} xl={3} className="g-4">
-        {notes.map((item) => (
-          <Col key={item._id}>
-            <Note
-              note={item}
-              className={styles.note}
-              onDeleteNoteClicked={deleteNote}
-              // passing state setters directly as event handlers or callback props.
-              onNoteClicked={setNoteToEdit}
-            />
-          </Col>
-        ))}
-      </Row>
+      {notesLoading && <Spinner animation="border" variant="primary" />}
+      {showNotesLoadingError && (
+        <p>Something went wrong.Please refresh the page</p>
+      )}
+      {!notesLoading && !showNotesLoadingError && (
+        <>
+          {notes.length > 0 ? noteGrid : <p>You don't have any notes yet.</p>}
+        </>
+      )}
       {showAddNoteDialog && (
         <AddNoteDialog
           onDismiss={() => setshowAddNoteDialog(false)}

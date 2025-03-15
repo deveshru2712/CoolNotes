@@ -10,3 +10,13 @@
 .cardText {
   white-space: pre-line;
 }
+
+.notePage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.noteGrid {
+  width: 100%;
+}
