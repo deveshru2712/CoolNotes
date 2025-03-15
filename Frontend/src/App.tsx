@@ -29,7 +29,9 @@ const App = () => {
 
   return (
     <Container>
-      <Button onClick={() => setshowAddNoteDialog(true)}>Add new Note</Button>
+      <Button className="mb-4" onClick={() => setshowAddNoteDialog(true)}>
+        Add new Note
+      </Button>
       <Row xs={1} md={2} xl={3} className="g-4">
         {notes.map((item) => (
           <Col key={item._id}>
@@ -38,7 +40,13 @@ const App = () => {
         ))}
       </Row>
       {showAddNoteDialog && (
-        <AddNoteDialog onDismiss={() => setshowAddNoteDialog(false)} />
+        <AddNoteDialog
+          onDismiss={() => setshowAddNoteDialog(false)}
+          onNoteSaved={(newNote) => {
+            setNotes([...notes, newNote]);
+            setshowAddNoteDialog(false);
+          }}
+        />
       )}
     </Container>
   );
