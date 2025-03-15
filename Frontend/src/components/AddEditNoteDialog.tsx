@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Note } from "../models/notes";
 import { NoteInput } from "../api/notes_api";
 import * as NoteApi from "../api/notes_api";
+import TextInputField from "./form/TextInputField";
 
 interface AddEditNoteDialogProps {
   noteToEdit?: Note;
@@ -51,34 +52,24 @@ const AddEditNoteDialog = ({
       <Modal.Body>
         {/* this handleSubmit gets call on initialization */}
         <Form id="addEditNoteForm" onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className="mb-3">
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Title"
-              // this isInvalid help in rendering of the form.Control.Feedback if resolve to true then only it will render
-              isInvalid={!!errors.title}
-              // this required will be shown when you would try save the form  without the field
-              {...register("title", { required: "Required" })}
-            />
+          <TextInputField
+            name="title"
+            label="Title"
+            type="text"
+            placeholder="Title"
+            register={register}
+            registerOption={{ required: "Required" }}
+            error={errors.title}
+          />
 
-            {/* this syntax is used as if the error are not defined it will
-            return noting */}
-
-            <Form.Control.Feedback type="invalid">
-              {errors.title?.message}
-            </Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Text</Form.Label>
-            <Form.Control
-              as={"textarea"}
-              rows={5}
-              placeholder="Text"
-              {...register("text")}
-            />
-          </Form.Group>
+          <TextInputField
+            name="text"
+            label="Text"
+            as="textarea"
+            rows={5}
+            placeholder="Text"
+            register={register}
+          />
         </Form>
       </Modal.Body>
 
