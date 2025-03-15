@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "../styles/Note.module.css";
 import stylesUtils from "../styles/utils.module.css";
 
@@ -11,11 +10,19 @@ import { MdDelete } from "react-icons/md";
 
 interface NoteProps {
   note: NoteModel;
+  // here we are not not directly giving the onNoteClick to the component that uses it rather we are giving it to there parent
+
+  onNoteClicked: (note: NoteModel) => void;
   onDeleteNoteClicked: (note: NoteModel) => void;
   className?: string;
 }
 
-const Note = ({ note, className, onDeleteNoteClicked }: NoteProps) => {
+const Note = ({
+  note,
+  className,
+  onNoteClicked,
+  onDeleteNoteClicked,
+}: NoteProps) => {
   const { title, text, createdAt, updatedAt } = note;
 
   let createdUpdatedText: string;
@@ -26,7 +33,10 @@ const Note = ({ note, className, onDeleteNoteClicked }: NoteProps) => {
   }
 
   return (
-    <Card className={`${styles.noteCard} ${className} `}>
+    <Card
+      className={`${styles.noteCard} ${className} `}
+      onClick={() => onNoteClicked(note)}
+    >
       <Card.Body className={styles.cardBody}>
         <Card.Title className={`${stylesUtils.flexCenter}`}>
           {title}

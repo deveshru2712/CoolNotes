@@ -7,13 +7,14 @@ import stylesUtils from "./styles/utils.module.css";
 import { Note as NoteModel } from "./models/notes";
 
 import * as NoteApi from "./api/notes_api";
-import AddNoteDialog from "./components/AddNoteDialog";
+import AddNoteDialog from "./components/AddEditNoteDialog";
 import Note from "./components/Note";
 
 const App = () => {
   // this tell tsc that i will be of Note type in future
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [showAddNoteDialog, setshowAddNoteDialog] = useState(false);
+  const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -40,7 +41,7 @@ const App = () => {
   return (
     <Container>
       <Button
-        className={`mb-4 ${stylesUtils.blockCenter}`}
+        className={`mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
         onClick={() => setshowAddNoteDialog(true)}
       >
         Add new Note
@@ -52,6 +53,8 @@ const App = () => {
               note={item}
               className={styles.note}
               onDeleteNoteClicked={deleteNote}
+              // passing state setters directly as event handlers or callback props.
+              onNoteClicked={setNoteToEdit}
             />
           </Col>
         ))}
@@ -62,6 +65,22 @@ const App = () => {
           onNoteSaved={(newNote) => {
             setNotes([...notes, newNote]);
             setshowAddNoteDialog(false);
+          }}
+        />
+      )}
+      {noteToEdit && (
+        <AddNoteDialog
+          noteToEdit={noteToEdit}
+          onDismiss={() => setNoteToEdit(null)}
+          onNoteSaved={(updatedNote) => {
+            setNoteToEdit(null);
+            setNotes(
+              notes.map((existingNote) =>
+                existingNote._id === updatedNote._id
+                  ? updatedNote
+                  : existingNote
+              )
+            );
           }}
         />
       )}
