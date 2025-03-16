@@ -129,7 +129,10 @@ export const updateNote: RequestHandler<
 
 export const deleteNote: RequestHandler = async (req, res, next) => {
   const { noteId } = req.params;
+  const authenticatedUserId = req.session.userId;
+
   try {
+    assertIsDefined(authenticatedUserId);
     if (!mongoose.isValidObjectId(noteId)) {
       throw createHttpError(400, "Invalid note id");
     }
@@ -137,6 +140,10 @@ export const deleteNote: RequestHandler = async (req, res, next) => {
     const note = await NoteModel.findByIdAndDelete(noteId);
     if (!note) {
       throw createHttpError(404, "Note not found");
+    }
+
+    if (!note.userId.equals(authenticatedUserId)) {
+      throw createHttpError(401, "You cannot access this note");
     }
 
     //status does not send response

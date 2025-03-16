@@ -17,7 +17,7 @@ const NavBar = ({
   onLogoutSuccessful,
 }: NavBarProps) => {
   return (
-    <Navbar bg="primary" variant="dark" expand="sm" sticky="top">
+    <Navbar bg="primary" expand="sm" sticky="top">
       <Container>
         <Navbar.Brand>Cool Notes App</Navbar.Brand>
         <Navbar.Toggle aria-controls="main-navbar" />
