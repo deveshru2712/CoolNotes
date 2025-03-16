@@ -1,3 +1,4 @@
+import { ConflictError, UnauthorizedError } from "../errors/http_error";
 import { Note } from "../models/notes";
 
 // request info -> is the url
@@ -10,7 +11,15 @@ export const fetchData = async (input: RequestInfo, init?: RequestInit) => {
   } else {
     const errorBody = await response.json();
     const errorMessage = errorBody.error;
-    throw Error(errorMessage);
+
+    if (response.status === 401) {
+      throw new UnauthorizedError(errorMessage);
+    } else if (response.status === 409) {
+      throw new ConflictError(errorMessage);
+    }
+    throw Error(
+      `Request failed with status code: ${response.status} message: ${errorMessage} `
+    );
   }
 };
 

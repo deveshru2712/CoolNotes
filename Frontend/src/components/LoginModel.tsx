@@ -2,9 +2,11 @@ import { useForm } from "react-hook-form";
 import { User } from "../models/user";
 import { LoginCredentials } from "../api/user_api";
 import * as UserApi from "../api/user_api";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Alert, Button, Form, Modal } from "react-bootstrap";
 import TextInputField from "./form/TextInputField";
 import stylesUtils from "../styles/utils.module.css";
+import { useState } from "react";
+import { UnauthorizedError } from "../errors/http_error";
 
 interface LoginModelProps {
   onDismiss: () => void;
@@ -18,11 +20,18 @@ const LoginModel = ({ onDismiss, onLoginSuccessful }: LoginModelProps) => {
     formState: { errors, isSubmitting },
   } = useForm<LoginCredentials>();
 
+  const [errorText, setErrorText] = useState<string | null>(null);
+
   const onSubmit = async (credentials: LoginCredentials) => {
     try {
       const user = await UserApi.logIn(credentials);
       onLoginSuccessful(user);
     } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        setErrorText(error.message);
+      } else {
+        alert(error);
+      }
       console.error(error);
     }
   };
@@ -34,6 +43,7 @@ const LoginModel = ({ onDismiss, onLoginSuccessful }: LoginModelProps) => {
           <Modal.Title>Log In</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {errorText && <Alert variant="danger">{errorText}</Alert>}
           <Form onSubmit={handleSubmit(onSubmit)}>
             <TextInputField
               name="username"
