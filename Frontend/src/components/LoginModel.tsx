@@ -30,7 +30,7 @@ const LoginModel = ({ onDismiss, onLoginSuccessful }: LoginModelProps) => {
   return (
     <>
       <Modal show onHide={onDismiss}>
-        <Modal.Header>
+        <Modal.Header closeButton>
           <Modal.Title>Log In</Modal.Title>
         </Modal.Header>
         <Modal.Body>

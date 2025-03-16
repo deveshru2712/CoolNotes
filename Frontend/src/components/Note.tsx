@@ -27,9 +27,9 @@ const Note = ({
 
   let createdUpdatedText: string;
   if (updatedAt > createdAt) {
-    createdUpdatedText = "Updated:" + formatDate(updatedAt);
+    createdUpdatedText = "Updated: " + formatDate(updatedAt);
   } else {
-    createdUpdatedText = "Created:" + formatDate(createdAt);
+    createdUpdatedText = "Created: " + formatDate(createdAt);
   }
 
   return (

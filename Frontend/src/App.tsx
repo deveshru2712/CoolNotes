@@ -43,11 +43,23 @@ const App = () => {
         </>
       </Container>
       {showSignUpModal && (
-        <SignUpModal onDismiss={() => {}} onSignUpSuccessfully={() => {}} />
+        <SignUpModal
+          onDismiss={() => setShowSignUpModal(false)}
+          onSignUpSuccessfully={(user) => {
+            setLoggedInUser(user);
+            setShowSignUpModal(false);
+          }}
+        />
       )}
 
       {showLogInModal && (
-        <LoginModel onDismiss={() => {}} onLoginSuccessful={() => {}} />
+        <LoginModel
+          onDismiss={() => setShowLogInModal(false)}
+          onLoginSuccessful={(user) => {
+            setLoggedInUser(user);
+            setShowLogInModal(false);
+          }}
+        />
       )}
     </div>
   );
