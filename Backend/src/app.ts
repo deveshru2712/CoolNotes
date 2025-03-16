@@ -8,6 +8,7 @@ import MongoStore from "connect-mongo";
 import env from "./utils/validateEnv";
 import notesRouter from "./routes/notes.routes";
 import userRouter from "./routes/user.routes";
+import { requiresAuth } from "../middleware/auth";
 
 const app = express();
 
@@ -32,8 +33,8 @@ app.use(
   })
 );
 
-app.use("/api/notes", notesRouter);
 app.use("/api/users", userRouter);
+app.use("/api/notes", requiresAuth, notesRouter);
 
 app.use((req, res, next) => {
   next(createHttpError(404, "Endpoint not found"));
