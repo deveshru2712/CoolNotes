@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
 
 import LoginModel from "./components/LoginModel";
 import NavBar from "./components/NavBar";
 import SignUpModal from "./components/SignUpModal";
-import styles from "./styles/NotePage.module.css";
 import { User } from "./models/user";
 
 import * as UserApi from "./api/user_api";
-import NotesPagedLoggedInView from "./components/NotesPagedLoggedInView";
-import NotesPagedLogOutView from "./components/NotesPagedLogOutView";
+import { Route, Routes } from "react-router-dom";
+import { Container } from "react-bootstrap";
+import NotesPage from "./Pages/NotesPage";
+import PrivacyPage from "./Pages/PrivacyPage";
+import NotFound from "./Pages/NotFound";
+import styles from "./styles/app.module.css";
 
 const App = () => {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -37,11 +39,16 @@ const App = () => {
         onSignUpClicked={() => setShowSignUpModal(true)}
         onLogoutSuccessful={() => setLoggedInUser(null)}
       />
-      <Container className={`${styles.notePage}`}>
-        <>
-          {loggedInUser ? <NotesPagedLoggedInView /> : <NotesPagedLogOutView />}
-        </>
+      <Container className={`${styles.pageContainer}`}>
+        <Routes>
+          <Route path="/" element={<NotesPage loggedInUser={loggedInUser} />} />
+
+          <Route path="/privacy" element={<PrivacyPage />} />
+
+          <Route path="/*" element={<NotFound />} />
+        </Routes>
       </Container>
+
       {showSignUpModal && (
         <SignUpModal
           onDismiss={() => setShowSignUpModal(false)}
